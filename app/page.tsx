@@ -45,7 +45,7 @@ export default function CityList() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {data.map((city: City) => (
+              {data?.map((city: City) => (
                 <TableRow key={city.cityId}>
                   <TableCell>
                     <Button variant="link" asChild>

@@ -34,31 +34,31 @@ export default function CityDetails() {
       <h1 className="text-4xl text-green-700">City Details</h1>
       <Card className="w-full p-6">
         <CardHeader>
-          <CardTitle className="text-3xl text-orange-500">{data.name}</CardTitle>
+          <CardTitle className="text-3xl text-orange-500">{data?.name}</CardTitle>
         </CardHeader>
         <CardContent className="flex flex-col gap-4">
           <p>
             <span className="text-xl font-bold">Country:</span>
             <span className="ml-2 text-xl text-indigo-500 italic">
-              {data.country}
+              {data?.country}
             </span>
           </p>
           <p>
             <span className="text-xl font-bold">Population:</span>
             <span className="ml-2 text-xl text-indigo-500 italic">
-              {data.population.toLocaleString()}
+              {data?.population.toLocaleString()}
             </span>
           </p>
           <p>
             <span className="text-xl font-bold">Area:</span>
             <span className="ml-2 text-xl text-indigo-500 italic">
-              {data.area.toLocaleString()}
+              {data?.area.toLocaleString()}
             </span>
           </p>
           <p>
             <span className="text-xl font-bold">Capital:</span>
             <span className="ml-2 text-xl text-indigo-500 italic">
-              {(data.capital) ? "Yes" : "No"}
+              {(data?.capital) ? "Yes" : "No"}
             </span>
           </p>
         </CardContent>
