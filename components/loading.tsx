@@ -1,9 +1,12 @@
 import { PageContainer } from "@/components/page-container"
+import { Spinner } from "@/components/ui/spinner"
 
 export function Loading(){
   return (
     <PageContainer>
-      <span className="text-blue-500 text-4xl italic">Loading ...</span>
+      <div className="flex align-text-bottom text-blue-500 text-4xl italic">
+        <Spinner className="size-10 mr-4"/>Loading ...
+      </div>
     </PageContainer>
   )
 }
