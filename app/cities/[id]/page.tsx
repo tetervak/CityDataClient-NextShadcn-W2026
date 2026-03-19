@@ -19,7 +19,7 @@ import { LoadingError } from "@/components/loading-error"
 
 export default function CityDetails() {
   const { id } = useParams()
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["city", id],
     queryFn: () => fetchCity(id as string),
   })
@@ -27,7 +27,7 @@ export default function CityDetails() {
   console.log('City details data:', data)
 
   if (isLoading) return <Loading />
-  if (error) return <LoadingError message={error.message} />
+  if (error) return <LoadingError message={error.message} retry={refetch}/>
 
   return (
     <PageContainer>

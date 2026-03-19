@@ -23,13 +23,13 @@ import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 
 export default function CityList() {
-  const { data, error, isLoading } = useQuery({
+  const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["cities"],
     queryFn: fetchCities,
   })
 
   if (isLoading) return <Loading/>
-  if (error) return <LoadingError message={error.message}/>
+  if (error) return <LoadingError message={error.message} retry={refetch}/>
 
   return (
     <PageContainer>
