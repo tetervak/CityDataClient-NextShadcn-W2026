@@ -14,6 +14,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 import { PageContainer } from "@/components/page-container"
+import { Loading } from "@/components/loading"
+import { LoadingError } from "@/components/loading-error"
 
 export default function CityDetails() {
   const { id } = useParams()
@@ -24,8 +26,8 @@ export default function CityDetails() {
 
   console.log('City details data:', data)
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (isLoading) return <Loading />
+  if (error) return <LoadingError message={error.message} />
 
   return (
     <PageContainer>

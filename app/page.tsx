@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/page-container"
+import { Loading } from "@/components/loading"
+import { LoadingError } from "@/components/loading-error"
 
 export default function CityList() {
   const { data, error, isLoading } = useQuery({
@@ -26,8 +28,8 @@ export default function CityList() {
     queryFn: fetchCities,
   })
 
-  if (isLoading) return <div>Loading...</div>
-  if (error) return <div>Error: {error.message}</div>
+  if (isLoading) return <Loading/>
+  if (error) return <LoadingError message={error.message}/>
 
   return (
     <PageContainer>
