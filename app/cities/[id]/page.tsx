@@ -13,6 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import { PageContainer } from "@/components/page-container"
 
 export default function CityDetails() {
   const { id } = useParams()
@@ -27,7 +28,7 @@ export default function CityDetails() {
   if (error) return <div>Error: {error.message}</div>
 
   return (
-    <React.Fragment>
+    <PageContainer>
       <h1 className="text-4xl text-green-700">City Details</h1>
       <Card className="w-full p-6">
         <CardHeader>
@@ -66,6 +67,6 @@ export default function CityDetails() {
           List Cities
         </Link>
       </Button>
-    </React.Fragment>
+    </PageContainer>
   )
 }

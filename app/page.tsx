@@ -18,6 +18,7 @@ import {
   CardContent
 } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { PageContainer } from "@/components/page-container"
 
 export default function CityList() {
   const { data, error, isLoading } = useQuery({
@@ -29,7 +30,7 @@ export default function CityList() {
   if (error) return <div>Error: {error.message}</div>
 
   return (
-    <React.Fragment>
+    <PageContainer>
       <h1 className="text-4xl text-green-700">City List</h1>
       <Card className="w-full">
         <CardContent>
@@ -57,6 +58,6 @@ export default function CityList() {
           </Table>
         </CardContent>
       </Card>
-    </React.Fragment>
+    </PageContainer>
   )
 }
