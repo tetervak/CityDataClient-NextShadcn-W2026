@@ -10,14 +10,20 @@ type ErrorProps = {
 export function LoadingError({message, retry}: ErrorProps){
   return (
     <PageContainer>
-      <p className="text-red-500 text-4xl italic">Error: {message}</p>
-      { retry &&
+      <p className="text-4xl text-red-500">Error:</p>
+      <p className="ml-4 text-3xl italic">{message}</p>
+      {retry && (
         <p>
-          <Button onClick={retry} variant="secondary" className="text-xl p-4 text-blue-600">
-            <RedoIcon/>Retry
+          <Button
+            onClick={retry}
+            variant="secondary"
+            className="p-4 text-xl text-blue-600"
+          >
+            <RedoIcon />
+            Retry
           </Button>
         </p>
-      }
+      )}
     </PageContainer>
   )
 }
