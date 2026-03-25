@@ -8,9 +8,9 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PageContainer } from "@/components/page-container"
 import { Checkbox } from "@/components/ui/checkbox"
-import Link from "next/link"
-import { CheckIcon, CrossIcon, TableIcon, XIcon } from "lucide-react"
 import { ButtonGroup } from "@/components/ui/button-group"
+import { CheckIcon, TableIcon, XIcon } from "lucide-react"
+import Link from "next/link"
 import React from "react"
 
 const formSchema = z.object({
@@ -28,7 +28,7 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>;
 
-export default function AddCity() {
+export default function EditCity() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -45,7 +45,7 @@ export default function AddCity() {
 
   return (
     <PageContainer>
-      <h1 className="text-4xl text-green-700">Add City</h1>
+      <h1 className="text-4xl text-green-700">Edit City</h1>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
         <ButtonGroup>
           <Button type="submit">

@@ -5,7 +5,7 @@ import React from "react"
 import { useParams } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { fetchCity } from "@/lib/api/cities"
-import { TableIcon } from "lucide-react"
+import { CheckIcon, TableIcon, TrashIcon, XIcon } from "lucide-react"
 import Link from "next/link"
 import {
   Card,
@@ -16,6 +16,8 @@ import {
 import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
+import { ButtonGroup } from "@/components/ui/button-group"
+import { CityDetailsCard } from "@/components/city-details-card"
 
 export default function CityDetails() {
   const { id } = useParams()
@@ -32,43 +34,31 @@ export default function CityDetails() {
   return (
     <PageContainer>
       <h1 className="text-4xl text-green-700">City Details</h1>
-      <Card className="w-full p-6">
-        <CardHeader>
-          <CardTitle className="text-3xl text-orange-500">{data?.name}</CardTitle>
-        </CardHeader>
-        <CardContent className="flex flex-col gap-4">
-          <p>
-            <span className="text-xl font-bold">Country:</span>
-            <span className="ml-2 text-xl text-indigo-500 italic">
-              {data?.country}
-            </span>
-          </p>
-          <p>
-            <span className="text-xl font-bold">Population:</span>
-            <span className="ml-2 text-xl text-indigo-500 italic">
-              {data?.population.toLocaleString()}
-            </span>
-          </p>
-          <p>
-            <span className="text-xl font-bold">Area:</span>
-            <span className="ml-2 text-xl text-indigo-500 italic">
-              {data?.area.toLocaleString()}
-            </span>
-          </p>
-          <p>
-            <span className="text-xl font-bold">Capital:</span>
-            <span className="ml-2 text-xl text-indigo-500 italic">
-              {(data?.capital) ? "Yes" : "No"}
-            </span>
-          </p>
-        </CardContent>
-      </Card>
-      <Button className="mt-2" asChild>
-        <Link href="/">
-          <TableIcon />
-          List Cities
-        </Link>
-      </Button>
+      {data && <CityDetailsCard city={data}/>}
+      <ButtonGroup>
+        <ButtonGroup>
+          <Button asChild>
+            <Link href="/">
+              <TableIcon />
+              List Cities
+            </Link>
+          </Button>
+        </ButtonGroup>
+        <ButtonGroup>
+          <Button asChild>
+            <Link href={`/edit-city/${id}`}>
+              <CheckIcon />
+              Edit
+            </Link>
+          </Button>
+          <Button asChild variant="outline" className="text-red-500">
+            <Link href={`/delete-city/${id}`}>
+              <TrashIcon />
+              Delete
+            </Link>
+          </Button>
+        </ButtonGroup>
+      </ButtonGroup>
     </PageContainer>
   )
 }
