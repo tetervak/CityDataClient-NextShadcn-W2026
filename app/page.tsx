@@ -21,6 +21,7 @@ import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
+import { CirclePlusIcon } from "lucide-react"
 
 export default function CityList() {
   const { data, error, isLoading, refetch } = useQuery({
@@ -60,6 +61,11 @@ export default function CityList() {
           </Table>
         </CardContent>
       </Card>
+      <p>
+        <Button className="mt-2" asChild>
+          <Link href="/add-city"><CirclePlusIcon/>Add City</Link>
+        </Button>
+      </p>
     </PageContainer>
   )
 }
