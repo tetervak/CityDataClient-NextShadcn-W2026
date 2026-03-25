@@ -9,11 +9,14 @@ import { Input } from "@/components/ui/input"
 import { PageContainer } from "@/components/page-container"
 import { Checkbox } from "@/components/ui/checkbox"
 import Link from "next/link"
-import { CheckIcon, CrossIcon, TableIcon, XIcon } from "lucide-react"
+import { CheckIcon, TableIcon, XIcon } from "lucide-react"
 import { ButtonGroup } from "@/components/ui/button-group"
 import React from "react"
 
 const formSchema = z.object({
+  id: z.string().min(1, {
+    message: "ID must be at least 1 character.",
+  }),
   name: z.string().min(2, {
     message: "Name must be at least 2 characters.",
   }),
@@ -32,6 +35,7 @@ export default function AddCity() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      id: "",
       name: "",
       country: "",
       population: 0,

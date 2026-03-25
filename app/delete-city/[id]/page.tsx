@@ -1,20 +1,13 @@
 'use client'
-
-import { zodResolver } from "@hookform/resolvers/zod"
-import { Controller, useForm } from "react-hook-form"
-import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { PageContainer } from "@/components/page-container"
-import { Checkbox } from "@/components/ui/checkbox"
-import { CheckIcon, TableIcon, TrashIcon, XIcon } from "lucide-react"
+import { TableIcon, TrashIcon, XIcon } from "lucide-react"
 import Link from "next/link"
 import { ButtonGroup } from "@/components/ui/button-group"
 import React from "react"
-import { useParams } from "next/navigation"
-import { useQuery } from "@tanstack/react-query"
-import { fetchCity } from "@/lib/api/cities"
+import { useParams, useRouter } from "next/navigation"
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { deleteCity, fetchCity } from "@/lib/api/cities"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { CityDetailsCard } from "@/components/city-details-card"
@@ -23,16 +16,27 @@ import { CityDetailsCard } from "@/components/city-details-card"
 export default function DeleteCity() {
 
   const { id } = useParams()
+  const queryClient = useQueryClient()
+  const router = useRouter()
+
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["city", id],
     queryFn: () => fetchCity(id as string),
   })
 
-  console.log("City details data:", data)
+  const { mutate } = useMutation({
+    mutationFn: deleteCity,
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: ["cities"] })
+      router.push("/")
+    },
+    onError: (err: Error) => {
+      console.error(err)
+    },
+  })
 
   if (isLoading) return <Loading />
   if (error) return <LoadingError message={error.message} retry={refetch} />
-
 
   return (
     <PageContainer>
@@ -42,7 +46,8 @@ export default function DeleteCity() {
       </h2>
       {data && <CityDetailsCard city={data}/>}
       <ButtonGroup>
-        <Button className="bg-red-500 text-white">
+        <Button className="bg-red-500 text-white"
+                onClick={() => mutate(id as string)}>
           <TrashIcon />
           Delete
         </Button>
