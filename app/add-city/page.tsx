@@ -24,8 +24,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { addCity } from "@/lib/api/cities"
 import { useRouter } from "next/navigation"
 
-const formSchema = z.object({
-  id: z.string().min(1, {
+const addCityFormSchema = z.object({
+  cityId: z.string().min(1, {
     message: "ID must be at least 1 character.",
   }),
   name: z.string().min(2, {
@@ -44,19 +44,21 @@ const formSchema = z.object({
   }),
 })
 
-type AddCityFormData = z.infer<typeof formSchema>
+const defaultCityInputValues = {
+  cityId: "",
+  name: "",
+  population: 10000,
+  capital: false,
+  area: 0,
+  country: "Canada",
+};
+
+type AddCityFormData = z.infer<typeof addCityFormSchema>
 
 export default function AddCity() {
   const form = useForm<AddCityFormData>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      id: "",
-      name: "",
-      population: 10000,
-      capital: false,
-      area: 0,
-      country: "Canada",
-    },
+    resolver: zodResolver(addCityFormSchema),
+    defaultValues: defaultCityInputValues,
     mode: "onTouched",
   })
 
@@ -76,14 +78,7 @@ export default function AddCity() {
 
   function onSubmit(values: AddCityFormData) {
     console.log(values)
-    mutate({
-      cityId: values.id,
-      name: values.name,
-      population: values.population,
-      capital: values.capital,
-      area: values.area,
-      country: values.country,
-    })
+    mutate(values)
   }
 
   return (
@@ -92,7 +87,7 @@ export default function AddCity() {
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-1/2 space-y-8">
         <FieldGroup>
           <Controller
-            name="id"
+            name="cityId"
             control={form.control}
             rules={{ required: true }}
             render={({ field, fieldState }) => (
