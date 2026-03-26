@@ -7,12 +7,6 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchCity } from "@/lib/api/cities"
 import { CheckIcon, TableIcon, TrashIcon, XIcon } from "lucide-react"
 import Link from "next/link"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
 import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
@@ -34,7 +28,7 @@ export default function CityDetails() {
   return (
     <PageContainer>
       <h1 className="text-4xl text-green-700">City Details</h1>
-      {data && <CityDetailsCard city={data}/>}
+      {data && <CityDetailsCard city={data} />}
       <ButtonGroup>
         <ButtonGroup>
           <Button asChild>
@@ -45,13 +39,17 @@ export default function CityDetails() {
           </Button>
         </ButtonGroup>
         <ButtonGroup>
-          <Button asChild>
+          <Button asChild className="bg-cyan-700 hover:bg-cyan-500">
             <Link href={`/edit-city/${id}`}>
               <CheckIcon />
               Edit
             </Link>
           </Button>
-          <Button asChild variant="outline" className="text-red-500 hover:text-red-600">
+          <Button
+            asChild
+            variant="outline"
+            className="text-red-500 hover:text-red-600"
+          >
             <Link href={`/delete-city/${id}`}>
               <TrashIcon />
               Delete

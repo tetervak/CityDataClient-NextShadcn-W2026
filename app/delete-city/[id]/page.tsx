@@ -44,10 +44,12 @@ export default function DeleteCity() {
       <h2 className="text-2xl text-red-700 italic">
         Do you really want to delete this city?
       </h2>
-      {data && <CityDetailsCard city={data}/>}
+      {data && <CityDetailsCard city={data} />}
       <ButtonGroup>
-        <Button className="bg-red-500 text-white hover:bg-red-600"
-                onClick={() => mutate(id as string)}>
+        <Button
+          className="bg-red-600 text-white hover:bg-red-500"
+          onClick={() => mutate(id as string)}
+        >
           <TrashIcon />
           Delete
         </Button>
