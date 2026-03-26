@@ -44,10 +44,10 @@ const formSchema = z.object({
   }),
 })
 
-type FormData = z.infer<typeof formSchema>
+type AddCityFormData = z.infer<typeof formSchema>
 
 export default function AddCity() {
-  const form = useForm<FormData>({
+  const form = useForm<AddCityFormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
       id: "",
@@ -74,7 +74,7 @@ export default function AddCity() {
     },
   })
 
-  function onSubmit(values: FormData) {
+  function onSubmit(values: AddCityFormData) {
     console.log(values)
     mutate({
       cityId: values.id,
