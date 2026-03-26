@@ -51,7 +51,7 @@ export default function CityDetails() {
               Edit
             </Link>
           </Button>
-          <Button asChild variant="outline" className="text-red-500">
+          <Button asChild variant="outline" className="text-red-500 hover:text-red-600">
             <Link href={`/delete-city/${id}`}>
               <TrashIcon />
               Delete
