@@ -1,11 +1,10 @@
 'use client';
-
 import { Button } from "@/components/ui/button"
 import React from "react"
 import { useParams } from "next/navigation"
 import { useQuery } from "@tanstack/react-query"
 import { fetchCity } from "@/lib/api/cities"
-import { CheckIcon, TableIcon, TrashIcon, XIcon } from "lucide-react"
+import { CheckIcon, TableIcon, TrashIcon } from "lucide-react"
 import Link from "next/link"
 import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"

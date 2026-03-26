@@ -12,7 +12,6 @@ import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { CityDetailsCard } from "@/components/city-details-card"
 
-
 export default function DeleteCity() {
 
   const { id } = useParams()
