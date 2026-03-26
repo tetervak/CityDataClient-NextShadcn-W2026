@@ -19,7 +19,7 @@ import {
   FieldLabel,
   FieldSet,
 } from "@/components/ui/field"
-import React from "react"
+import React, { useEffect } from "react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { updateCity } from "@/lib/api/cities"
 import { useRouter } from "next/navigation"
@@ -52,7 +52,6 @@ const editCityFormSchema = z.object({
 type EditCityFormData = z.infer<typeof editCityFormSchema>
 
 export default function EditCity() {
-
   const { id } = useParams()
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["city", id],
@@ -73,6 +72,13 @@ export default function EditCity() {
     },
     mode: "onTouched",
   })
+
+  // this useEffect was necessary for not losing fetched data on browser reload
+  useEffect(() => {
+    if (data) {
+      form.reset(data)
+    }
+  }, [data, form])
 
   const queryClient = useQueryClient()
   const router = useRouter()
