@@ -21,7 +21,7 @@ import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
-import { CirclePlusIcon } from "lucide-react"
+import { CirclePlusIcon, EditIcon, TrashIcon } from "lucide-react"
 
 export default function CityList() {
   const { data, error, isLoading, refetch } = useQuery({
@@ -43,6 +43,7 @@ export default function CityList() {
                 <TableHead>Name</TableHead>
                 <TableHead>Population</TableHead>
                 <TableHead>Country</TableHead>
+                <TableHead>Options</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -55,6 +56,18 @@ export default function CityList() {
                   </TableCell>
                   <TableCell>{city.population.toLocaleString()}</TableCell>
                   <TableCell>{city.country}</TableCell>
+                  <TableCell>
+                    <Button variant="link" asChild>
+                      <Link href={`/edit-city/${city.cityId}`}>
+                        <EditIcon/>
+                      </Link>
+                    </Button>
+                    <Button variant="link" asChild>
+                      <Link href={`/delete-city/${city.cityId}`}>
+                        <TrashIcon/>
+                      </Link>
+                    </Button>
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>
