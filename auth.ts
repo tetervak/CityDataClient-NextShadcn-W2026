@@ -43,6 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 })
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
+  console.log("Refreshing token at", new Date().toLocaleTimeString())
   try {
     if (!token.refreshToken) throw new Error("Missing refresh token")
 
@@ -74,6 +75,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       ...token,
       accessToken: refreshedTokens.access_token,
       expiresAt: Math.floor(Date.now() / 1000 + refreshedTokens.expires_in),
+      // If Spring sends a new one, use it; otherwise, keep the old one
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
     }
   } catch (error) {

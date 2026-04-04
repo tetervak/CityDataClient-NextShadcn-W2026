@@ -18,35 +18,47 @@ function requestConfig(token?: string){
 }
 
 export async function fetchCities (token?: string): Promise<City[]> {
-  const response = await axios.get(dataUrl(), requestConfig(token))
+  const response =
+    await axios.get(dataUrl(), requestConfig(token))
   return response.data
 }
 
 export async function fetchCity(id: string, token?: string): Promise<City> {
-  const res = await axios.get<City>(dataUrl(id), requestConfig(token))
+  const res =
+    await axios.get<City>(dataUrl(id), requestConfig(token))
   return res.data
 }
 
 export async function deleteCity(id: string, token?: string): Promise<void> {
-  const res = await axios.delete(dataUrl(id), requestConfig(token))
+  const res =
+    await axios.delete(dataUrl(id), requestConfig(token))
   return res.data
 }
 
 export async function addCity (city: City, token?: string): Promise<City> {
-  const response = await axios.post(dataUrl(), city, requestConfig(token))
+  const response =
+    await axios.post(dataUrl(), city, requestConfig(token))
   return response.data
 }
 
-export async function updateCity(city: City): Promise<City> {
-  const response = await axios.put(
-    dataUrl(city.cityId),
-    city,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      }
-    }
-  )
+export async function updateCity(city: City, token?: string): Promise<City> {
+  const response =
+    await axios.put(dataUrl(city.cityId), city, requestConfig(token))
 
   return response.data
 }
+
+
+// export async function updateCity(city: City): Promise<City> {
+//   const response = await axios.put(
+//     dataUrl(city.cityId),
+//     city,
+//     {
+//       headers: {
+//         "Content-Type": "application/json",
+//       }
+//     }
+//   )
+//
+//   return response.data
+// }

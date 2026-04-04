@@ -2,8 +2,6 @@
 
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Controller, useForm } from "react-hook-form"
-import { z } from "zod"
-
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { PageContainer } from "@/components/page-container"
@@ -34,11 +32,20 @@ import {
   CityFormData
 } from "@/lib/city-form-schema"
 
+import { useSession } from "next-auth/react" // Import hook
+
 export default function EditCity() {
+
+  const { data: session } = useSession()
+
+  // Get the session on the client
+  const token = session?.accessToken
+
   const { id } = useParams()
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["city", id],
-    queryFn: () => fetchCity(id as string),
+    queryFn: () => fetchCity(id as string, token),
+    enabled: !!token, // Only fetch if we actually have a token
   })
 
   console.log("City details data:", data)
@@ -60,7 +67,7 @@ export default function EditCity() {
   const router = useRouter()
 
   const { mutate } = useMutation({
-    mutationFn: updateCity,
+    mutationFn: (values: CityFormData) => updateCity(values, token),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
       router.push("/")
@@ -77,6 +84,9 @@ export default function EditCity() {
     console.log(values)
     mutate(values)
   }
+
+  // Optional: Prevent the form from even showing if there's no token
+  if (!token) return null
 
   return (
     <PageContainer>

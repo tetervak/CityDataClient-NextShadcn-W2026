@@ -50,9 +50,9 @@ export default function AddCity() {
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
       router.push("/")
     },
-    onError: (err: any) => {
+    onError: (err: Error) => {
       // Professional tip: Check for 403 Forbidden specifically
-      console.error("Mutation Error:", err.response?.data || err.message)
+      console.error("Mutation Error:", err)
     },
   })
 
