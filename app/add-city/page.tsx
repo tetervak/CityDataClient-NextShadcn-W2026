@@ -28,7 +28,12 @@ import {
   CityFormData,
 } from "@/lib/city-form-schema"
 
+import { useSession } from "next-auth/react" // Import hook
+
 export default function AddCity() {
+  const { data: session } = useSession() // Access session
+  const token = session?.accessToken
+
   const form = useForm<CityFormData>({
     resolver: zodResolver(cityFormSchema),
     defaultValues: defaultCityFormValues,
@@ -39,20 +44,24 @@ export default function AddCity() {
   const router = useRouter()
 
   const { mutate } = useMutation({
-    mutationFn: addCity,
+    // Mutation function now receives the form data and the token
+    mutationFn: (values: CityFormData) => addCity(values, token),
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
       router.push("/")
     },
-    onError: (err: Error) => {
-      console.error(err)
+    onError: (err: any) => {
+      // Professional tip: Check for 403 Forbidden specifically
+      console.error("Mutation Error:", err.response?.data || err.message)
     },
   })
 
   function onSubmit(values: CityFormData) {
-    console.log(values)
     mutate(values)
   }
+
+  // Optional: Prevent the form from even showing if there's no token
+  if (!token) return null
 
   return (
     <PageContainer>

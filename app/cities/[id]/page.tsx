@@ -11,18 +11,29 @@ import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { CityDetailsCard } from "@/components/city-details-card"
+import { useSession } from "next-auth/react"
 
 export default function CityDetails() {
+
+  const { data: session } = useSession()
+
+  // Get the session on the client
+  const token = session?.accessToken
+
   const { id } = useParams()
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["city", id],
-    queryFn: () => fetchCity(id as string),
+    queryFn: () => fetchCity(id as string, token),
+    enabled: !!token, // Only fetch if we actually have a token
   })
 
   console.log('City details data:', data)
 
   if (isLoading) return <Loading />
   if (error) return <LoadingError message={error.message} retry={refetch}/>
+
+  // Optional: Prevent the content from even showing if there's no token
+  if (!token) return null
 
   return (
     <PageContainer>

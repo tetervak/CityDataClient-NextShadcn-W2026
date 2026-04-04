@@ -1,6 +1,5 @@
 import axios from "axios"
 import { City } from "@/lib/api/types"
-import { auth } from "@/auth"
 
 function dataUrl(id?: string): string{
   if(id){
@@ -10,35 +9,32 @@ function dataUrl(id?: string): string{
   }
 }
 
-export const fetchCities = async (token?: string): Promise<City[]> => {
-  const response = await axios.get("http://localhost:8080/api/cities", {
+function requestConfig(token?: string){
+  return {
     headers: {
       Authorization: token ? `Bearer ${token}` : undefined,
     },
-  })
+  }
+}
+
+export async function fetchCities (token?: string): Promise<City[]> {
+  const response = await axios.get(dataUrl(), requestConfig(token))
   return response.data
 }
 
-export async function fetchCity(id: string): Promise<City> {
-  const res = await axios.get<City>(dataUrl(id))
+export async function fetchCity(id: string, token?: string): Promise<City> {
+  const res = await axios.get<City>(dataUrl(id), requestConfig(token))
   return res.data
 }
 
-export async function deleteCity(id: string): Promise<void> {
-  const res = await axios.delete(dataUrl(id))
+export async function deleteCity(id: string, token?: string): Promise<void> {
+  const res = await axios.delete(dataUrl(id), requestConfig(token))
   return res.data
 }
 
-export async function addCity(city: City): Promise<City> {
-  const res = await axios.post(
-    dataUrl(),
-    city,
-    {
-      headers: { "Content-Type": "application/json" }
-    }
-  )
-
-  return res.data
+export async function addCity (city: City, token?: string): Promise<City> {
+  const response = await axios.post(dataUrl(), city, requestConfig(token))
+  return response.data
 }
 
 export async function updateCity(city: City): Promise<City> {

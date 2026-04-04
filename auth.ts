@@ -12,7 +12,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: "nextjs-client",
       clientSecret: "nextjs-secret",
       authorization: {
-        params: { scope: "openid profile read offline_access" },
+        params: { scope: "openid profile read write offline_access" },
       },
     },
   ],
@@ -43,28 +43,32 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 })
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
-  console.log("Refreshing token at", new Date().toLocaleTimeString())
   try {
-    // 1. Type Guard: If we don't have a refresh token, we can't refresh!
-    if (!token.refreshToken) {
-      throw new Error("Missing refresh token")
-    }
+    if (!token.refreshToken) throw new Error("Missing refresh token")
+
+    // Create the Basic Auth header: base64(client_id:client_secret)
+    const basicAuth = Buffer.from("nextjs-client:nextjs-secret").toString(
+      "base64"
+    )
 
     const response = await fetch("http://localhost:9000/oauth2/token", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+        Authorization: `Basic ${basicAuth}`, // Add this header
+      },
       body: new URLSearchParams({
-        client_id: "nextjs-client",
-        client_secret: "nextjs-secret",
         grant_type: "refresh_token",
-        // 2. Explicitly cast to string now that we've guarded against undefined
         refresh_token: token.refreshToken as string,
       }),
     })
 
     const refreshedTokens = await response.json()
 
-    if (!response.ok) throw refreshedTokens
+    if (!response.ok) {
+      console.error("Spring Auth Server Error:", refreshedTokens)
+      throw refreshedTokens
+    }
 
     return {
       ...token,
@@ -74,9 +78,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
     }
   } catch (error) {
     console.error("RefreshAccessTokenError", error)
-    return {
-      ...token,
-      error: "RefreshAccessTokenError",
-    }
+    return { ...token, error: "RefreshAccessTokenError" }
   }
 }

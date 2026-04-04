@@ -25,7 +25,6 @@ import { CirclePlusIcon, EditIcon, TrashIcon } from "lucide-react"
 import { useSession } from "next-auth/react"
 
 export default function CityList() {
-
   const { data: session } = useSession()
 
   // Get the session on the client
@@ -37,8 +36,11 @@ export default function CityList() {
     enabled: !!token, // Only fetch if we actually have a token
   })
 
-  if (isLoading) return <Loading/>
-  if (error) return <LoadingError message={error.message} retry={refetch}/>
+  if (isLoading) return <Loading />
+  if (error) return <LoadingError message={error.message} retry={refetch} />
+
+  // Optional: Prevent the table from even showing if there's no token
+  if (!token) return null
 
   return (
     <PageContainer>
@@ -67,12 +69,12 @@ export default function CityList() {
                   <TableCell>
                     <Button variant="link" asChild>
                       <Link href={`/edit-city/${city.cityId}`}>
-                        <EditIcon/>
+                        <EditIcon />
                       </Link>
                     </Button>
                     <Button variant="link" asChild>
                       <Link href={`/delete-city/${city.cityId}`}>
-                        <TrashIcon/>
+                        <TrashIcon />
                       </Link>
                     </Button>
                   </TableCell>
@@ -84,7 +86,10 @@ export default function CityList() {
       </Card>
       <p>
         <Button className="mt-2" asChild>
-          <Link href="/add-city"><CirclePlusIcon/>Add City</Link>
+          <Link href="/add-city">
+            <CirclePlusIcon />
+            Add City
+          </Link>
         </Button>
       </p>
     </PageContainer>
