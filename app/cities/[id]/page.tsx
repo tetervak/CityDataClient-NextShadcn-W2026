@@ -27,7 +27,6 @@ export default function CityDetails() {
     enabled: !!token, // Only fetch if we actually have a token
   })
 
-  console.log('City details data:', data)
 
   if (isLoading) return <Loading />
   if (error) return <LoadingError message={error.message} retry={refetch}/>

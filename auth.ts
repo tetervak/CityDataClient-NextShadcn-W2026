@@ -23,7 +23,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           ...token,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
-          expiresAt: Math.floor(Date.now() / 1000 + (account.expires_in || 0)),
+          expiresAt: Math.floor(Date.now() / 1000 + (account.expires_in || 0) - 30),
         }
       }
 
