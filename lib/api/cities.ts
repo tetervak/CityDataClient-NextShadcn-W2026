@@ -1,5 +1,6 @@
 import axios from "axios"
 import { City } from "@/lib/api/types"
+import { auth } from "@/auth"
 
 function dataUrl(id?: string): string{
   if(id){
@@ -9,9 +10,13 @@ function dataUrl(id?: string): string{
   }
 }
 
-export async function fetchCities(): Promise<City[]> {
-  const res = await axios.get<City[]>(dataUrl())
-  return res.data
+export const fetchCities = async (token?: string): Promise<City[]> => {
+  const response = await axios.get("http://localhost:8080/api/cities", {
+    headers: {
+      Authorization: token ? `Bearer ${token}` : undefined,
+    },
+  })
+  return response.data
 }
 
 export async function fetchCity(id: string): Promise<City> {

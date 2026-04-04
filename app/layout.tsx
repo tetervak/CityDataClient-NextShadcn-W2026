@@ -4,7 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils";
 import { Metadata } from "next"
-import { QueryProvider } from "@/components/query-provider"
+import { Providers } from "@/components/providers"
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -35,9 +35,9 @@ export default function RootLayout({
     >
       <body>
         <ThemeProvider>
-              <QueryProvider>
+              <Providers>
                 {children}
-              </QueryProvider>
+              </Providers>
         </ThemeProvider>
       </body>
     </html>

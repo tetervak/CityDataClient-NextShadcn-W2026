@@ -22,11 +22,19 @@ import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { CirclePlusIcon, EditIcon, TrashIcon } from "lucide-react"
+import { useSession } from "next-auth/react"
 
 export default function CityList() {
+
+  const { data: session } = useSession()
+
+  // Get the session on the client
+  const token = session?.accessToken
+
   const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["cities"],
-    queryFn: fetchCities,
+    queryKey: ["cities", token], // Add token to key so it refetches when logged in
+    queryFn: () => fetchCities(token), // Pass the token here
+    enabled: !!token, // Only fetch if we actually have a token
   })
 
   if (isLoading) return <Loading/>
