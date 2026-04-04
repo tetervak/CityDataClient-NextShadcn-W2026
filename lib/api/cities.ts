@@ -1,4 +1,5 @@
-import axios from "axios"
+// lib/api/cities.ts
+import api from "./axios-instance"
 import { City } from "@/lib/api/types"
 
 function dataUrl(id?: string): string{
@@ -9,56 +10,28 @@ function dataUrl(id?: string): string{
   }
 }
 
-function requestConfig(token?: string){
-  return {
-    headers: {
-      Authorization: token ? `Bearer ${token}` : undefined,
-    },
-  }
+// No token mentioned here! The interceptor adds it automatically.
+export async function fetchCities (): Promise<City[]> {
+  const { data } = await api.get(dataUrl())
+  return data
 }
 
-export async function fetchCities (token?: string): Promise<City[]> {
-  const response =
-    await axios.get(dataUrl(), requestConfig(token))
-  return response.data
+export async function fetchCity(id: string): Promise<City> {
+  const { data } = await api.get(dataUrl(id))
+  return data
 }
 
-export async function fetchCity(id: string, token?: string): Promise<City> {
-  const res =
-    await axios.get<City>(dataUrl(id), requestConfig(token))
-  return res.data
+export async function deleteCity(id: string): Promise<void> {
+  const { data } = await api.delete(dataUrl(id))
+  return data
 }
 
-export async function deleteCity(id: string, token?: string): Promise<void> {
-  const res =
-    await axios.delete(dataUrl(id), requestConfig(token))
-  return res.data
+export async function addCity (city: City): Promise<City> {
+  const { data } = await api.post(dataUrl(), city)
+  return data
 }
 
-export async function addCity (city: City, token?: string): Promise<City> {
-  const response =
-    await axios.post(dataUrl(), city, requestConfig(token))
-  return response.data
+export async function updateCity(city: City): Promise<City> {
+  const { data } = await api.put(dataUrl(city.cityId), city)
+  return data
 }
-
-export async function updateCity(city: City, token?: string): Promise<City> {
-  const response =
-    await axios.put(dataUrl(city.cityId), city, requestConfig(token))
-
-  return response.data
-}
-
-
-// export async function updateCity(city: City): Promise<City> {
-//   const response = await axios.put(
-//     dataUrl(city.cityId),
-//     city,
-//     {
-//       headers: {
-//         "Content-Type": "application/json",
-//       }
-//     }
-//   )
-//
-//   return response.data
-// }

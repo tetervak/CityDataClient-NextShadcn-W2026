@@ -22,25 +22,16 @@ import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { CirclePlusIcon, EditIcon, TrashIcon } from "lucide-react"
-import { useSession } from "next-auth/react"
 
 export default function CityList() {
-  const { data: session } = useSession()
-
-  // Get the session on the client
-  const token = session?.accessToken
 
   const { data, error, isLoading, refetch } = useQuery({
-    queryKey: ["cities", token], // Add token to key so it refetches when logged in
-    queryFn: () => fetchCities(token), // Pass the token here
-    enabled: !!token, // Only fetch if we actually have a token
+    queryKey: ["cities"],
+    queryFn: fetchCities,
   })
 
   if (isLoading) return <Loading />
   if (error) return <LoadingError message={error.message} retry={refetch} />
-
-  // Optional: Prevent the table from even showing if there's no token
-  if (!token) return null
 
   return (
     <PageContainer>

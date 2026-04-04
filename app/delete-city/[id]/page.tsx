@@ -11,13 +11,8 @@ import { deleteCity, fetchCity } from "@/lib/api/cities"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { CityDetailsCard } from "@/components/city-details-card"
-import { useSession } from "next-auth/react"
 
 export default function DeleteCity() {
-  const { data: session } = useSession()
-
-  // Get the session on the client
-  const token = session?.accessToken
 
   const { id } = useParams()
   const queryClient = useQueryClient()
@@ -25,12 +20,11 @@ export default function DeleteCity() {
 
   const { data, error, isLoading, refetch } = useQuery({
     queryKey: ["city", id],
-    queryFn: () => fetchCity(id as string, token),
-    enabled: !!token, // Only fetch if we actually have a token
+    queryFn: () => fetchCity(id as string),
   })
 
   const { mutate } = useMutation({
-    mutationFn: (id: string) => deleteCity(id, token),
+    mutationFn: deleteCity,
     onSuccess: () => {
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
       router.push("/")
@@ -43,9 +37,6 @@ export default function DeleteCity() {
 
   if (isLoading) return <Loading />
   if (error) return <LoadingError message={error.message} retry={refetch} />
-
-  // Optional: Prevent the content from even showing if there's no token
-  if (!token) return null
 
   return (
     <PageContainer>
