@@ -18,10 +18,10 @@ declare module "next-auth" {
 }
 
 declare module "next-auth/jwt" {
-  /**
-   * This covers the token object in the jwt() callback
-   */
   interface JWT {
     accessToken?: string
+    refreshToken?: string // Ensure this is string, not unknown
+    expiresAt?: number
+    error?: "RefreshAccessTokenError"
   }
 }

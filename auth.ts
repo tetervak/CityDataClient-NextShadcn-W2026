@@ -43,6 +43,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 })
 
 async function refreshAccessToken(token: JWT): Promise<JWT> {
+  console.log("Refreshing token at", new Date().toLocaleTimeString())
   try {
     // 1. Type Guard: If we don't have a refresh token, we can't refresh!
     if (!token.refreshToken) {
