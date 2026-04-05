@@ -28,6 +28,8 @@ import {
   CityFormData,
 } from "@/lib/city-form-schema"
 
+import { toast } from "sonner"; // 1. Import toast
+
 export default function AddCity() {
 
   const form = useForm<CityFormData>({
@@ -39,13 +41,20 @@ export default function AddCity() {
   const queryClient = useQueryClient()
   const router = useRouter()
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: addCity,
-    onSuccess: () => {
+    onSuccess: (data) => {
+      // Success Toast
+      toast.success(`City "${data.name}" added successfully!`)
+
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
       router.push("/")
     },
     onError: (err: Error) => {
+      // 3. Error Toast - can show specific Spring error messages
+      const errorMessage = err.message || "Failed to add city."
+      toast.error(errorMessage)
+
       // Professional tip: Check for 403 Forbidden specifically
       console.error("Mutation Error:", err)
     },
@@ -191,7 +200,7 @@ export default function AddCity() {
                 </FieldDescription>
               </Field>
             )}
-            />
+          />
         </FieldGroup>
         <FieldGroup>
           <Controller
@@ -221,9 +230,9 @@ export default function AddCity() {
           />
         </FieldGroup>
         <ButtonGroup>
-          <Button type="submit">
+          <Button type="submit" disabled={isPending}>
             <CheckIcon />
-            Submit
+            {isPending ? "Saving..." : "Submit"}
           </Button>
           <Button asChild variant="outline">
             <Link href="/">

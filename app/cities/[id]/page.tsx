@@ -11,23 +11,21 @@ import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { CityDetailsCard } from "@/components/city-details-card"
-import { useSession } from "next-auth/react"
+import { useRoles } from "@/hooks/use-roles"
 
 export default function CityDetails() {
 
-  const { data: session } = useSession()
-  const isAdmin = session?.user?.roles?.includes("ROLE_ADMIN")
-  console.log("isAdmin:", isAdmin)
-  console.log("roles:", session?.user?.roles)
+  const { isAdmin, isLoading : isSessionLoading } = useRoles() // Single line of "Identity" logic
 
   const { id } = useParams()
 
-  const { data, error, isLoading, refetch } = useQuery({
+  const { data, error, isLoading : isDataLoading, refetch } = useQuery({
     queryKey: ["city", id],
     queryFn: () => fetchCity(id as string),
+    enabled: !isSessionLoading && !!id,
   })
 
-  if (isLoading) return <Loading />
+  if (isSessionLoading || isDataLoading) return <Loading />
   if (error) return <LoadingError message={error.message} retry={refetch} />
 
   return (

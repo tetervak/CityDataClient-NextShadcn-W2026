@@ -13,7 +13,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientId: "nextjs-client",
       clientSecret: "nextjs-secret",
       authorization: {
-        params: { scope: "openid profile read write offline_access" },
+        params: { scope: "openid profile read write delete offline_access" },
       },
     },
   ],

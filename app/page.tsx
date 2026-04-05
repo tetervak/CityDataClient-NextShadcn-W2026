@@ -1,4 +1,4 @@
-'use client';
+"use client"
 
 import React from "react"
 import { fetchCities } from "@/lib/api/cities"
@@ -13,24 +13,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
-import {
-  Card,
-  CardContent
-} from "@/components/ui/card"
+import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { PageContainer } from "@/components/page-container"
 import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { CirclePlusIcon, EditIcon, TrashIcon } from "lucide-react"
+import { useRoles } from "@/hooks/use-roles"
 
 export default function CityList() {
+  const { isAdmin, isLoading: isSessionLoading } = useRoles() // Single line of "Identity" logic
 
-  const { data, error, isLoading, refetch } = useQuery({
+  const {
+    data,
+    error,
+    isLoading: isDataLoading,
+    refetch,
+  } = useQuery({
     queryKey: ["cities"],
     queryFn: fetchCities,
+    enabled: !isSessionLoading,
   })
 
-  if (isLoading) return <Loading />
+  if (isSessionLoading || isDataLoading) return <Loading />
   if (error) return <LoadingError message={error.message} retry={refetch} />
 
   return (
@@ -44,7 +49,7 @@ export default function CityList() {
                 <TableHead>Name</TableHead>
                 <TableHead>Population</TableHead>
                 <TableHead>Country</TableHead>
-                <TableHead>Options</TableHead>
+                {isAdmin && (<TableHead>Options</TableHead>)}
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -57,32 +62,36 @@ export default function CityList() {
                   </TableCell>
                   <TableCell>{city.population.toLocaleString()}</TableCell>
                   <TableCell>{city.country}</TableCell>
-                  <TableCell>
-                    <Button variant="link" asChild>
-                      <Link href={`/edit-city/${city.cityId}`}>
-                        <EditIcon />
-                      </Link>
-                    </Button>
-                    <Button variant="link" asChild>
-                      <Link href={`/delete-city/${city.cityId}`}>
-                        <TrashIcon />
-                      </Link>
-                    </Button>
-                  </TableCell>
+                  {isAdmin && (
+                    <TableCell>
+                      <Button variant="link" asChild>
+                        <Link href={`/edit-city/${city.cityId}`}>
+                          <EditIcon />
+                        </Link>
+                      </Button>
+                      <Button variant="link" asChild>
+                        <Link href={`/delete-city/${city.cityId}`}>
+                          <TrashIcon />
+                        </Link>
+                      </Button>
+                    </TableCell>
+                  )}
                 </TableRow>
               ))}
             </TableBody>
           </Table>
         </CardContent>
       </Card>
-      <p>
-        <Button className="mt-2" asChild>
-          <Link href="/add-city">
-            <CirclePlusIcon />
-            Add City
-          </Link>
-        </Button>
-      </p>
+      {isAdmin && (
+        <p>
+          <Button className="mt-2" asChild>
+            <Link href="/add-city">
+              <CirclePlusIcon />
+              Add City
+            </Link>
+          </Button>
+        </p>
+      )}
     </PageContainer>
   )
 }

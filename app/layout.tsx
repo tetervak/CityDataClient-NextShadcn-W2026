@@ -6,6 +6,8 @@ import { cn } from "@/lib/utils";
 import { Metadata } from "next"
 import { Providers } from "@/components/providers"
 
+import { Toaster } from "sonner"
+
 const roboto = Roboto({
   weight: ["400", "500", "700"],
   subsets: ["latin"],
@@ -31,13 +33,17 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", roboto.variable)}
+      className={cn(
+        "antialiased",
+        fontMono.variable,
+        "font-sans",
+        roboto.variable
+      )}
     >
       <body>
         <ThemeProvider>
-              <Providers>
-                {children}
-              </Providers>
+          <Providers>{children}</Providers>
+          <Toaster position="top-right" richColors />
         </ThemeProvider>
       </body>
     </html>
