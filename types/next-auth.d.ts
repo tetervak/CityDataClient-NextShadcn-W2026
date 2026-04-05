@@ -1,27 +1,23 @@
 import "next-auth"
 import "next-auth/jwt"
 
+import { DefaultSession } from "next-auth"
+
 declare module "next-auth" {
-  /**
-   * This covers the session object used in auth() and useSession()
-   */
   interface Session {
     accessToken?: string
-  }
-
-  /**
-   * This covers the user object within the session
-   */
-  interface User {
-    id?: string
+    user: {
+      roles?: string[]
+    } & DefaultSession["user"]
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     accessToken?: string
-    refreshToken?: string // Ensure this is string, not unknown
+    refreshToken?: string
     expiresAt?: number
+    roles?: string[]
     error?: "RefreshAccessTokenError"
   }
 }

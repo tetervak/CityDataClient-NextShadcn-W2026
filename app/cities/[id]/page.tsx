@@ -11,8 +11,14 @@ import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { ButtonGroup } from "@/components/ui/button-group"
 import { CityDetailsCard } from "@/components/city-details-card"
+import { useSession } from "next-auth/react"
 
 export default function CityDetails() {
+
+  const { data: session } = useSession()
+  const isAdmin = session?.user?.roles?.includes("ROLE_ADMIN")
+  console.log("isAdmin:", isAdmin)
+  console.log("roles:", session?.user?.roles)
 
   const { id } = useParams()
 
@@ -37,24 +43,26 @@ export default function CityDetails() {
             </Link>
           </Button>
         </ButtonGroup>
-        <ButtonGroup>
-          <Button asChild className="bg-cyan-700 hover:bg-cyan-500">
-            <Link href={`/edit-city/${id}`}>
-              <CheckIcon />
-              Edit
-            </Link>
-          </Button>
-          <Button
-            asChild
-            variant="outline"
-            className="text-red-500 hover:text-red-600"
-          >
-            <Link href={`/delete-city/${id}`}>
-              <TrashIcon />
-              Delete
-            </Link>
-          </Button>
-        </ButtonGroup>
+        {isAdmin && (
+          <ButtonGroup>
+            <Button asChild className="bg-cyan-700 hover:bg-cyan-500">
+              <Link href={`/edit-city/${id}`}>
+                <CheckIcon />
+                Edit
+              </Link>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="text-red-500 hover:text-red-600"
+            >
+              <Link href={`/delete-city/${id}`}>
+                <TrashIcon />
+                Delete
+              </Link>
+            </Button>
+          </ButtonGroup>
+        )}
       </ButtonGroup>
     </PageContainer>
   )

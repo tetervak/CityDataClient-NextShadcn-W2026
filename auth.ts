@@ -1,6 +1,7 @@
 // auth.ts
 import NextAuth from "next-auth"
 import { JWT } from "next-auth/jwt"
+import { jwtDecode } from "jwt-decode" // 1. Import decoder
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -19,24 +20,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, account }) {
       if (account) {
+        // 2. Decode the roles during the initial login
+        const decoded: JWT = jwtDecode(account.access_token!)
+
         return {
           ...token,
           accessToken: account.access_token,
           refreshToken: account.refresh_token,
-          expiresAt: Math.floor(Date.now() / 1000 + (account.expires_in || 0) - 30),
+          roles: decoded.roles, // Save the roles into the JWT cookie
+          expiresAt: Math.floor(
+            Date.now() / 1000 + (account.expires_in || 0) - 30
+          ),
         }
       }
 
-      // If the token hasn't expired yet, return it
       if (Date.now() < (token.expiresAt as number) * 1000) {
         return token
       }
 
-      // If it HAS expired, trigger the refresh logic (Step C)
       return refreshAccessToken(token)
     },
     async session({ session, token }) {
+      // 3. Pass the token data into the session so components can see it
       session.accessToken = token.accessToken
+      session.user.roles = token.roles as string[]
       return session
     },
   },
@@ -47,7 +54,6 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
     if (!token.refreshToken) throw new Error("Missing refresh token")
 
-    // Create the Basic Auth header: base64(client_id:client_secret)
     const basicAuth = Buffer.from("nextjs-client:nextjs-secret").toString(
       "base64"
     )
@@ -56,7 +62,7 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${basicAuth}`, // Add this header
+        Authorization: `Basic ${basicAuth}`,
       },
       body: new URLSearchParams({
         grant_type: "refresh_token",
@@ -71,12 +77,15 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
       throw refreshedTokens
     }
 
+    // 4. Decode the NEW access token to get updated roles
+    const decoded: JWT = jwtDecode(refreshedTokens.access_token)
+
     return {
       ...token,
       accessToken: refreshedTokens.access_token,
       expiresAt: Math.floor(Date.now() / 1000 + refreshedTokens.expires_in),
-      // If Spring sends a new one, use it; otherwise, keep the old one
       refreshToken: refreshedTokens.refresh_token ?? token.refreshToken,
+      roles: decoded.roles, // Ensure roles are updated on refresh
     }
   } catch (error) {
     console.error("RefreshAccessTokenError", error)
