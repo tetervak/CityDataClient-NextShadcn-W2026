@@ -5,14 +5,21 @@
 import { signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { LogOutIcon } from "lucide-react"
-import { clearCookie } from "@/app/actions/auth-actions"
+import { clearCookie, handleGlobalLogout } from "@/app/actions/auth-actions"
 
 export function LogoutButton() {
-  const handleLogout = () => {
-    void clearCookie()
-    // This clears the Next.js session and redirects to the home page or login
-    void signOut({ callbackUrl: "/" })
+
+  const handleLogout = async () => {
+    const logoutUrl = await handleGlobalLogout()
+    // This physically moves the user to Spring to kill the master session
+    window.location.href = logoutUrl
   }
+
+  // const handleLogout = () => {
+  //   void clearCookie()
+  //   // This clears the Next.js session and redirects to the home page or login
+  //   void signOut({ callbackUrl: "/" })
+  // }
 
   return (
     <Button
