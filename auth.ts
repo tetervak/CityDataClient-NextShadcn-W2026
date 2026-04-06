@@ -3,15 +3,19 @@ import NextAuth from "next-auth"
 import { JWT } from "next-auth/jwt"
 import { jwtDecode } from "jwt-decode" // 1. Import decoder
 
+const authServerUrl: string = process.env.NEXT_PUBLIC_AUTH_URL as string;
+const clientId: string = process.env.AUTH_SPRING_CLIENT_ID as string;
+const clientSecret: string = process.env.AUTH_SPRING_CLIENT_SECRET as string;
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     {
       id: "spring-auth",
       name: "City Data Authorization Server",
       type: "oidc",
-      issuer: "http://localhost:9000",
-      clientId: "nextjs-client",
-      clientSecret: "nextjs-secret",
+      issuer: authServerUrl,
+      clientId: clientId,
+      clientSecret: clientSecret,
       authorization: {
         params: { scope: "openid profile read write delete offline_access" },
       },
@@ -54,21 +58,22 @@ async function refreshAccessToken(token: JWT): Promise<JWT> {
   try {
     if (!token.refreshToken) throw new Error("Missing refresh token")
 
-    const basicAuth = Buffer.from("nextjs-client:nextjs-secret").toString(
-      "base64"
-    )
+    const basicAuth =
+      Buffer.from(`${clientId}:${clientSecret}`).toString("base64")
 
-    const response = await fetch("http://localhost:9000/oauth2/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${basicAuth}`,
-      },
-      body: new URLSearchParams({
-        grant_type: "refresh_token",
-        refresh_token: token.refreshToken as string,
-      }),
-    })
+    const response = await fetch(`${authServerUrl}/oauth2/token`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${basicAuth}`,
+        },
+        body: new URLSearchParams({
+          grant_type: "refresh_token",
+          refresh_token: token.refreshToken as string,
+        }),
+      }
+    )
 
     const refreshedTokens = await response.json()
 

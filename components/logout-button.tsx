@@ -5,21 +5,26 @@
 import { signOut } from "next-auth/react"
 import { Button } from "@/components/ui/button"
 import { LogOutIcon } from "lucide-react"
-import { clearCookie, handleGlobalLogout } from "@/app/actions/auth-actions"
+
+const handleLogout = async () => {
+  // 1. Clear local Auth.js session
+  await signOut({ redirect: false })
+
+  // 2. Redirect to Spring with OIDC parameters
+  const baseUrl = "http://localhost:9000/logout"
+  const clientId = "nextjs-client" // Must match Spring config
+
+  //const returnTo = window.location.origin // http://localhost:3000
+  const returnTo = "http://localhost:3000"
+
+  // Standard OIDC Logout Query
+  const logoutUrl = `${baseUrl}?post_logout_redirect_uri=${encodeURIComponent(returnTo)}&client_id=${clientId}`
+
+  // This physically moves the user to Spring to kill the master session
+  window.location.href = logoutUrl
+}
 
 export function LogoutButton() {
-
-  const handleLogout = async () => {
-    const logoutUrl = await handleGlobalLogout()
-    // This physically moves the user to Spring to kill the master session
-    window.location.href = logoutUrl
-  }
-
-  // const handleLogout = () => {
-  //   void clearCookie()
-  //   // This clears the Next.js session and redirects to the home page or login
-  //   void signOut({ callbackUrl: "/" })
-  // }
 
   return (
     <Button
