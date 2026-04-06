@@ -7,7 +7,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     {
       id: "spring-auth",
-      name: "Spring Academy",
+      name: "City Data Authorization Server",
       type: "oidc",
       issuer: "http://localhost:9000",
       clientId: "nextjs-client",

@@ -32,6 +32,8 @@ import {
   CityFormData
 } from "@/lib/city-form-schema"
 
+import { toast } from "sonner"; // 1. Import toast
+
 export default function EditCity() {
 
   const { id } = useParams()
@@ -56,11 +58,14 @@ export default function EditCity() {
   const queryClient = useQueryClient()
   const router = useRouter()
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: updateCity,
     onSuccess: () => {
+      // Success Toast
+      toast.success(`City "${data?.name}" updated successfully!`)
+
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
-      router.push("/")
+      router.push("/cities")
     },
     onError: (err: Error) => {
       console.error(err)
@@ -214,12 +219,12 @@ export default function EditCity() {
           />
         </FieldGroup>
         <ButtonGroup>
-          <Button type="submit">
+          <Button type="submit" disabled={isPending}>
             <CheckIcon />
-            Submit
+            {isPending ? "Updating..." : "Save" }
           </Button>
           <Button asChild variant="outline">
-            <Link href="/">
+            <Link href="/cities">
               <XIcon />
               Cancel
             </Link>
@@ -227,7 +232,7 @@ export default function EditCity() {
         </ButtonGroup>
       </form>
       <Button className="mt-2" asChild>
-        <Link href="/">
+        <Link href="/cities">
           <TableIcon />
           List Cities
         </Link>

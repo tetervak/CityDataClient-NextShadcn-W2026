@@ -48,7 +48,7 @@ export default function AddCity() {
       toast.success(`City "${data.name}" added successfully!`)
 
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
-      router.push("/")
+      router.push("/cities")
     },
     onError: (err: Error) => {
       // 3. Error Toast - can show specific Spring error messages
@@ -235,7 +235,7 @@ export default function AddCity() {
             {isPending ? "Saving..." : "Submit"}
           </Button>
           <Button asChild variant="outline">
-            <Link href="/">
+            <Link href="/cities">
               <XIcon />
               Cancel
             </Link>
@@ -243,7 +243,7 @@ export default function AddCity() {
         </ButtonGroup>
       </form>
       <Button className="mt-2" asChild>
-        <Link href="/">
+        <Link href="/cities">
           <TableIcon />
           List Cities
         </Link>

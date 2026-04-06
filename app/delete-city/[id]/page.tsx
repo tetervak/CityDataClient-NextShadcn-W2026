@@ -12,6 +12,8 @@ import { Loading } from "@/components/loading"
 import { LoadingError } from "@/components/loading-error"
 import { CityDetailsCard } from "@/components/city-details-card"
 
+import { toast } from "sonner"; // 1. Import toast
+
 export default function DeleteCity() {
 
   const { id } = useParams()
@@ -23,13 +25,20 @@ export default function DeleteCity() {
     queryFn: () => fetchCity(id as string),
   })
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: deleteCity,
     onSuccess: () => {
+      // Success Toast
+      toast.success(`City "${data?.name}" deleted successfully!`)
+
       void queryClient.invalidateQueries({ queryKey: ["cities"] })
-      router.push("/")
+      router.push("/cities")
     },
     onError: (err: Error) => {
+      // 3. Error Toast - can show specific Spring error messages
+      const errorMessage = err.message || "Failed to delete city."
+      toast.error(errorMessage)
+
       // Professional tip: Check for 403 Forbidden specifically
       console.error(err)
     },
@@ -47,21 +56,22 @@ export default function DeleteCity() {
       {data && <CityDetailsCard city={data} />}
       <ButtonGroup>
         <Button
+          disabled={isPending}
           className="bg-red-600 text-white hover:bg-red-500"
           onClick={() => mutate(id as string)}
         >
           <TrashIcon />
-          Delete
+          {isPending ? "Deleting..." : "Delete"}
         </Button>
         <Button asChild variant="outline">
-          <Link href="/">
+          <Link href="/cities">
             <XIcon />
             Cancel
           </Link>
         </Button>
       </ButtonGroup>
       <Button asChild>
-        <Link href="/">
+        <Link href="/cities">
           <TableIcon />
           List Cities
         </Link>

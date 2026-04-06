@@ -35,7 +35,7 @@ export default function CityDetails() {
       <ButtonGroup>
         <ButtonGroup>
           <Button asChild>
-            <Link href="/">
+            <Link href="/cities">
               <TableIcon />
               List Cities
             </Link>
